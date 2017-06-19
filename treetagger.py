@@ -12,9 +12,8 @@ import os
 import sys
 from subprocess import Popen, PIPE
 
-from nltk.internals import find_binary, find_file
+from nltk.internals import find_binary
 from nltk.tag.api import TaggerI
-from sys import platform as _platform
 
 _treetagger_url = 'http://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/'
 
@@ -85,7 +84,7 @@ class TreeTagger(TaggerI):
         self._abbr_list = abbreviation_list
 
         if language in _treetagger_languages:
-            if _platform == "win32":
+            if sys.platform.startswith("win"):
                 treetagger_bin_name = 'tag-' + language
             else:
                 treetagger_bin_name = 'tree-tagger-' + language
