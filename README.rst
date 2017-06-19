@@ -41,7 +41,7 @@ variable ``TREETAGGER_HOME`` to the installation directory of the
 
 Alternatively you can use ``path_to_home`` parameter in ``TreeTagger`` constructor and set file to the tagger file directly:
 
-::python
+.. code:: python
 
     from treetagger import TreeTagger
     tt = TreeTagger(language='english', path_to_home='~/treetagger/cmd/tree-tagger-english')
@@ -51,7 +51,7 @@ Usage
 
 Tagging a sentence from Python:
 
-::python
+.. code:: python
 
     from treetagger import TreeTagger
     tt = TreeTagger(language='english')
@@ -73,7 +73,7 @@ The output is a list of [token, tag, lemma]:
 
 Tagging a german sentence from Python:
 
-::python
+.. code:: python
 
     from treetagger import TreeTagger
     tt = TreeTagger(language='german')
