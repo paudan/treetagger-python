@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-import sys
 import os
+
 try:
     from setuptools import setup
 except ImportError:
@@ -16,7 +16,7 @@ setup(name='treetagger',
       long_description=README,
       author='Mirko Otto',
       author_email='dropsy@gmail.com',
-      url='https://github.com/miotto/treetagger-python',
+      url='https://github.com/paudan/treetagger-python',
       py_modules=['treetagger'],
       install_requires=['nltk'],
       license='GPL Version 3',

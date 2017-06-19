@@ -9,6 +9,7 @@ A Python module for interfacing with the Treetagger by Helmut Schmid.
 """
 
 import os
+import sys
 from subprocess import Popen, PIPE
 
 from nltk.internals import find_binary, find_file
@@ -17,7 +18,8 @@ from sys import platform as _platform
 
 _treetagger_url = 'http://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/'
 
-_treetagger_languages = ['bulgarian', 'dutch', 'english', 'estonian', 'finnish', 'french', 'galician', 'german', 'italian', 'polish', 'russian', 'slovak', 'slovak2', 'spanish']
+_treetagger_languages = ['bulgarian', 'dutch', 'english', 'estonian', 'finnish', 'french', 'galician', 'german',
+                         'italian', 'polish', 'russian', 'slovak', 'slovak2', 'spanish']
 
 class TreeTagger(TaggerI):
     r"""
@@ -78,8 +80,7 @@ class TreeTagger(TaggerI):
         The caller must ensure that tokens are encoded in the right charset.
         """
         treetagger_paths = ['.', '/usr/bin', '/usr/local/bin', '/opt/local/bin',
-                        '/Applications/bin', '~/bin', '~/Applications/bin',
-                        '~/work/tmp/treetagger/cmd', '~/tree-tagger/cmd']
+                            '/usr/local/treetagger/cmd', '~/treetagger/cmd']
         treetagger_paths = list(map(os.path.expanduser, treetagger_paths))
         self._abbr_list = abbreviation_list
 
@@ -119,9 +120,11 @@ class TreeTagger(TaggerI):
         elif(self._abbr_list is not None):
             p = Popen([self._treetagger_bin,"-a",self._abbr_list], 
                         shell=False, stdin=PIPE, stdout=PIPE, stderr=PIPE)
-        
-        #(stdout, stderr) = p.communicate(bytes(_input, 'UTF-8'))
-        (stdout, stderr) = p.communicate(str(_input).encode('utf-8'))
+
+        if sys.version_info >= (3,):
+            (stdout, stderr) = p.communicate(bytes(_input, 'UTF-8'))
+        else:
+            (stdout, stderr) = p.communicate(str(_input))
 
         # Check the return code.
         if p.returncode != 0:

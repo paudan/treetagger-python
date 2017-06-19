@@ -1,7 +1,7 @@
 treetagger-python
 =================
 
-A Python module for interfacing with the Treetagger by Helmut Schmid.
+A Python module for interfacing with the TreeTagger by Helmut Schmid.
 
 Copyright (C) 2016 Mirko Otto
 
@@ -11,12 +11,10 @@ Dependencies
 ------------
 
 -  `TreeTagger <http://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/>`__
--  Python 3
+-  Python 2.7 or Python 3
 -  `NLTK <http://nltk.org/>`__
--  treetagger.py is for Python 3
--  treetagger_python2.py is for old Python 2
 
-Tested with Treetagger 3.2, Python 3.4 and NLTK 3.0.4
+Tested with Treetagger 3.2, Python 2.7/3.5 and NLTK 3.2.4
 
 INSTALLATION
 ------------
@@ -41,12 +39,19 @@ variable ``TREETAGGER_HOME`` to the installation directory of the
 
     export TREETAGGER_HOME='/path/to/your/TreeTagger/cmd/'
 
+Alternatively you can use ``path_to_home`` parameter in ``TreeTagger`` constructor and set file to the tagger file directly:
+
+::python
+
+    from treetagger import TreeTagger
+    tt = TreeTagger(language='english', path_to_home='~/treetagger/cmd/tree-tagger-english')
+
 Usage
 -----
 
 Tagging a sentence from Python:
 
-::
+::python
 
     from treetagger import TreeTagger
     tt = TreeTagger(language='english')
@@ -68,7 +73,7 @@ The output is a list of [token, tag, lemma]:
 
 Tagging a german sentence from Python:
 
-::
+::python
 
     from treetagger import TreeTagger
     tt = TreeTagger(language='german')
