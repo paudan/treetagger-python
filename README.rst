@@ -57,19 +57,13 @@ Tagging a sentence from Python:
     tt = TreeTagger(language='english')
     tt.tag('What is the airspeed of an unladen swallow?')
 
-The output is a list of [token, tag, lemma]:
+The output is a list of (token, tag):
 
 ::
 
-    [['What', 'WP', 'What'], 
-    ['is', 'VBZ', 'be'], 
-    ['the', 'DT', 'the'], 
-    ['airspeed', 'NN', 'airspeed'], 
-    ['of', 'IN', 'of'], 
-    ['an', 'DT', 'an'], 
-    ['unladen', 'JJ', '<unknown>'], 
-    ['swallow', 'NN', 'swallow'], 
-    ['?', 'SENT', '?']]
+    [(u'What', u'WP'), (u'is', u'VBZ'), (u'the', u'DT'),
+     (u'airspeed', u'NN'), (u'of', u'IN'), (u'an', u'DT'),
+     (u'unladen', u'JJ'), (u'swallow', u'NN'), (u'?', u'SENT')]
 
 Tagging a german sentence from Python:
 
@@ -83,11 +77,54 @@ The output is a list of [token, tag, lemma]:
 
 ::
 
-    [['Das', 'ART', 'die'], 
-    ['Haus', 'NN', 'Haus'], 
-    ['hat', 'VAFIN', 'haben'], 
-    ['einen', 'ART', 'eine'], 
-    ['großen', 'ADJA', 'groß'], 
-    ['hübschen', 'ADJA', 'hübsch'], 
-    ['Garten', 'NN', 'Garten'], 
-    ['.', '$.', '.']]
+    [(u'Das', u'ART'), (u'Haus', u'NN'), (u'hat', u'VAFIN'), (u'einen', u'ART'),
+     (u'großen', u'ADJA'), (u'hübschen', u'ADJA'), (u'Garten', u'NN'), (u'.', u'$.')]
+
+
+Chunking the same sentences from Python will produce such parse trees:
+
+.. code:: python
+
+    from treetagger import TreeTagger
+    treetagger_path = os.path.join('/', 'usr', 'local', 'treetagger', 'cmd')
+    tt = TreeTagger(language='english', path_to_home=treetagger_path)
+    sentence = tt.tag('What is the airspeed of an unladen swallow?')
+    cp = TreeTaggerChunker(language='english', path_to_home=treetagger_path)
+    cp.parse(sentence)
+
+The output is a parse tree:
+
+::
+
+    (ROOT
+      (NC (What WP))
+      (VC (is VBZ))
+      (NC (the DT) (airspeed NN))
+      (PC (of IN) (NC (an DT) (unladen JJ) (swallow NN))))
+
+
+Similarly, the following example illustrates chunking for German language:
+
+.. code:: python
+
+    from treetagger import TreeTagger
+    treetagger_path = os.path.join('/', 'usr', 'local', 'treetagger', 'cmd')
+    tt = TreeTagger(language='german', path_to_home=treetagger_path)
+    sentence = tt.tag('Das Haus hat einen großen hübschen Garten.')
+    cp = TreeTaggerChunker(language='german', path_to_home=treetagger_path)
+    cp.parse(sentence)
+
+The output is a parse tree:
+
+::
+
+    (ROOT
+      (NC (What WP))
+      (VC (is VBZ))
+      (NC (the DT) (airspeed NN))
+      (PC (of IN) (NC (an DT) (unladen JJ) (swallow NN))))
+    .(ROOT
+      (NC (Das ART) (Haus NN))
+      (VC (hat VAFIN))
+      (NC (einen ART) (grossen ADJA) (hubschen ADJA) (Garten NN))
+      (. $.))
