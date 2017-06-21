@@ -73,7 +73,7 @@ Tagging a german sentence from Python:
     tt = TreeTagger(language='german')
     tt.tag('Das Haus hat einen großen hübschen Garten.')
 
-The output is a list of [token, tag, lemma]:
+The output is a list of (token, tag):
 
 ::
 
