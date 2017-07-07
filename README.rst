@@ -96,11 +96,11 @@ The output is a parse tree:
 
 ::
 
-    (ROOT
-      (NC (What WP))
-      (VC (is VBZ))
-      (NC (the DT) (airspeed NN))
-      (PC (of IN) (NC (an DT) (unladen JJ) (swallow NN))))
+    (S
+      (NC WP/What)
+      (VC VBZ/is)
+      (NC DT/the NN/airspeed)
+      (PC (NC (NC DT/an) (NC JJ/unladen) (NC NN/swallow)) IN/of))
 
 
 Similarly, the following example illustrates chunking for German language:
@@ -118,13 +118,8 @@ The output is a parse tree:
 
 ::
 
-    (ROOT
-      (NC (What WP))
-      (VC (is VBZ))
-      (NC (the DT) (airspeed NN))
-      (PC (of IN) (NC (an DT) (unladen JJ) (swallow NN))))
-    .(ROOT
-      (NC (Das ART) (Haus NN))
-      (VC (hat VAFIN))
-      (NC (einen ART) (grossen ADJA) (hubschen ADJA) (Garten NN))
-      (. $.))
+    (S
+      (NC ART/Das NN/Haus)
+      (VC VAFIN/hat)
+      (NC ART/einen ADJA/grossen ADJA/hubschen NN/Garten)
+      (None $./.))

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Interface to the TreeTagger POS-tagger
 #
-# Copyright (C) Mirko Otto, Paulius Danenas
-# Author: Paulius Danenas <danpaulius@gmail.com>
+# Copyright (C) Paulius Danenas
+# Author: Paulius Danenas <danpaulius@gmail.com>, based on code by Mirko Otto
 
 """
 A Python module for NLTK interfacing with the Treetagger by Helmut Schmid.
@@ -13,10 +13,10 @@ import sys
 import re
 from subprocess import Popen, PIPE
 
-from nltk.internals import find_binary, find_file
+from nltk.internals import find_binary
 from nltk.tag.api import TaggerI
 from nltk.chunk.api import ChunkParserI
-from nltk.tree import Tree
+from nltk.tree import Tree, ParentedTree
 
 _treetagger_url = 'http://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/'
 
@@ -242,13 +242,54 @@ class TreeTaggerChunker(ChunkParserI):
                 words = tagged_word.split('\t')
                 _str = '_'.join(words[:-2])
                 parse_tree += ' ({} {}) '.format(_str, words[-2])
-        parse_tree = "(ROOT {} )".format(parse_tree)
+        parse_tree = "(S {} )".format(parse_tree)
         # Transform into compatible parse tree string
         try:
-            parse = Tree.fromstring(parse_tree.decode('utf-8'))
+            if sys.version_info < (3,):
+                parse_tree = parse_tree.decode('utf-8')
+            parse = Tree.fromstring(parse_tree)
+            parse = self.__get_nltk_parse_tree__(parse)
         except Exception:
             parse = None
-        return parse
+        finally:
+            return parse
+
+
+    def __get_nltk_parse_tree__(self, tree):
+
+        def create_tree(tree):
+            nodes = []
+            for n in tree:
+                subtrees = [subtree for subtree in n.subtrees(filter=lambda k: k != n)]
+                if len(subtrees) > 0:
+                    subnodes = create_tree(n)
+                    nodes.append(ParentedTree(n.label(), subnodes))
+                else:
+                    parent_label = n.parent().label() if n.parent() is not None \
+                                                         and n.parent().label() not in ['S', 'ROOT'] else None
+                    nodes.append(ParentedTree(parent_label, [(n[0], n.label())]))
+            return nodes
+
+        def move_up(tree):
+            for n in tree:
+                if isinstance(n, Tree):
+                    subtrees = [subtree for subtree in n.subtrees(filter=lambda k: k != n)]
+                    for subtree in subtrees:
+                        if subtree.label() == n.label():
+                            tmp = subtree
+                            parent = subtree.parent()
+                            parent.remove(tmp)
+                            subsub = [s for s in subtree.subtrees(filter=lambda k: k != subtree)]
+                            if len(subsub) == 0:
+                                n.extend(tmp.leaves())
+                            else:
+                                move_up(subtree)
+            return tree
+
+        tree = ParentedTree.convert(tree)
+        new_tree = ParentedTree('S', create_tree(tree))
+        return move_up(new_tree)
+
 
 
 if __name__ == "__main__":
