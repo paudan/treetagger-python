@@ -58,6 +58,8 @@ class TreeTagger(TaggerI):
 
     """
 
+    __lemmas = None
+
     def __init__(self, path_to_home=None, language='english',
                  verbose=False, abbreviation_list=None):
         """
@@ -128,11 +130,17 @@ class TreeTagger(TaggerI):
 
         # Output the tagged sentences
         tagged_sentences = []
+        self.__lemmas = []
         for tagged_word in treetagger_output.strip().split('\n'):
             words = tagged_word.split('\t')
-            tagged_sentences.append(('_'.join(words[:-2]), words[-2]))
+            token = '_'.join(words[:-2])
+            tagged_sentences.append((token, words[-2]))
+            self.__lemmas.append((token, words[-1]))
         return tagged_sentences
 
+
+    def get_lemmas(self):
+        return self.__lemmas
 
 
 class TreeTaggerChunker(ChunkParserI):

@@ -80,6 +80,7 @@ The output is a list of (token, tag):
     [(u'Das', u'ART'), (u'Haus', u'NN'), (u'hat', u'VAFIN'), (u'einen', u'ART'),
      (u'großen', u'ADJA'), (u'hübschen', u'ADJA'), (u'Garten', u'NN'), (u'.', u'$.')]
 
+Note, that TreeTagger also provides lemmatization functionality. To get the list of lemmas, use ``get_lemmas`` method after performing parsing.
 
 Chunking the same sentences from Python will produce such parse trees:
 
