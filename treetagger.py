@@ -304,6 +304,8 @@ class TreeTaggerChunker(ChunkParserI):
                 n = tree[i]
                 if isinstance(n, Tree):
                     subtrees = [subtree for subtree in n.subtrees(filter=lambda k: k != n or k.label() is None)]
+                    if i == 0:
+                        subtrees = subtrees[::-1]
                     for subtree in subtrees:
                         if subtree.label() == n.label() or subtree.label() is None:
                             tmp = subtree
