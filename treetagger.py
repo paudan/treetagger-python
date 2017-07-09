@@ -238,6 +238,7 @@ class TreeTaggerChunker(ChunkParserI):
 
         parse_tree = ''
         for tagged_word in treetagger_output.strip().split('\n'):
+            tagged_word = self.__encode__(tagged_word)
             pattern = re.compile(r'<\s*[A-Z]+\s*>')
             match = re.match(pattern, tagged_word)
             if match:
@@ -251,7 +252,6 @@ class TreeTaggerChunker(ChunkParserI):
                 _str = '_'.join(words[:-2])
                 parse_tree += ' ({} {}) '.format(_str, words[-2])
         parse_tree = "(S {} )".format(parse_tree)
-        # Transform into compatible parse tree string
         try:
             if sys.version_info < (3,):
                 parse_tree = parse_tree.decode('utf-8')
@@ -261,6 +261,27 @@ class TreeTaggerChunker(ChunkParserI):
             parse = None
         finally:
             return parse
+
+
+    __encodings__ = {
+        "(": "xleftbrackx", ")": "xrightbrackx"
+    }
+
+    def __encode__(self, token):
+        if token is None:
+            return token
+        for enc in self.__encodings__:
+            token = token.replace(enc, self.__encodings__[enc])
+        return token
+
+
+    def __decode_(self, token):
+        if token is None:
+            return token
+        inv_map = {v: k for k, v in self.__encodings__.items()}
+        for enc in inv_map:
+            token = token.replace(enc, inv_map[enc])
+        return token
 
 
     def __get_nltk_parse_tree__(self, tree):
@@ -275,7 +296,7 @@ class TreeTaggerChunker(ChunkParserI):
                 else:
                     parent_label = n.parent().label() if n.parent() is not None \
                                                          and n.parent().label() not in ['S', 'ROOT'] else None
-                    nodes.append(ParentedTree(parent_label, [(n[0], n.label())]))
+                    nodes.append(ParentedTree(parent_label, [(self.__decode_(n[0]), self.__decode_(n.label()))]))
             return nodes
 
         def move_up(tree):

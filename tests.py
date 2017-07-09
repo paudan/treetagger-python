@@ -28,6 +28,15 @@ def test_chunking():
     print(cp.parse(sentence))
 
 
+def test_chunking_brackets():
+    language='english'
+    tt = TreeTagger(language=language, path_to_home=treetagger_path)
+    phrase = 'What is the airspeed of an (unladen) swallow?'
+    sentence = tt.tag(phrase)
+    cp = TreeTaggerChunker(language=language, path_to_home=treetagger_path)
+    print(cp.parse(sentence))
+
+
 def test_chunking_de():
     language='german'
     tt = TreeTagger(language=language, path_to_home=treetagger_path)
