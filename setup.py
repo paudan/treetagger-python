@@ -1,14 +1,11 @@
-#!/usr/bin/env python
-
-import os
+from os.path import abspath, dirname, join
 
 try:
     from setuptools import setup
 except ImportError:
     from distutils.core import setup
 
-here = os.path.abspath(os.path.dirname(__file__))
-README = open(os.path.join(here, 'README.rst')).read()
+README = open(join(abspath(dirname(__file__)), 'README.rst'), encoding="utf8").read()
 
 setup(name='treetagger',
       version='1.1.2',
